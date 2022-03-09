@@ -1,0 +1,128 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: domains-inject
+spec:
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
+  privileged: false
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
+  hostNetwork: true
+  volumes:
+  - '*'
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: internal-kubectl
+  namespace: ${DEPLOY_NS}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: domains-inject
+rules:
+  - apiGroups: ["","vmoperator.vmware.com"]
+    resources:
+      - virtualmachines
+      - secrets
+    verbs:
+      - get
+      - list
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs:     ['use']
+    resourceNames:
+      - domains-inject
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: domains-kubectl
+  namespace: ${DEPLOY_NS}
+subjects:
+  - kind: ServiceAccount
+    name: internal-kubectl
+roleRef:
+  kind: ClusterRole
+  name: domains-inject
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: domains-inject
+  namespace: ${DEPLOY_NS}
+  labels:
+    app: domains-inject
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: domains-inject
+  template:
+    metadata:
+      labels:
+        app: domains-inject
+    spec:
+      serviceAccountName: internal-kubectl
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - image: localhost:5000/vmware/domains-inject:1.0.0
+        imagePullPolicy: Always
+        name: domains-inject
+        env:
+          - name: DOMAINS
+            value: "${DOMAINS}"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        volumeMounts:
+          - mountPath: /tmp
+            name: tmp
+      volumes:
+      - emptyDir: {}
+        name: tmp
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          key: node.alpha.kubernetes.io/notReady
+          operator: Exists
+        - effect: NoExecute
+          key: node.alpha.kubernetes.io/unreachable
+          operator: Exists
+        - effect: NoSchedule
+          key: kubeadmNode
+          operator: Equal
+          value: master

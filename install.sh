@@ -55,8 +55,8 @@ sshpass -p "${sv_pass}" ssh -t -q -o StrictHostKeyChecking=no -o UserKnownHostsF
 source /etc/profile 
 gunzip -f domains-inject.tar.gz
 ctr image import domains-inject.tar
-ctr image tag --force domains-inject:1.0.0 localhost:5002/vmware/domains-inject:1.0.0
-ctr image push localhost:5002/vmware/domains-inject:1.0.0
+ctr image tag --force docker.io/library/domains-inject:1.0.0 localhost:5002/vmware/domains-inject:1.0.0
+ctr image push --plain-http localhost:5002/vmware/domains-inject:1.0.0
 EOF
 if [ $? -eq 0 ] ;
 then      
@@ -67,7 +67,6 @@ else
 fi
 echo "cleanup image tar"
 sshpass -p "${sv_pass}" ssh -t -q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null  root@"${ip}"  << EOF
-rm ./domains-inject.tar.gz
 rm ./domains-inject.tar
 EOF
 ip=$(nextip $ip)

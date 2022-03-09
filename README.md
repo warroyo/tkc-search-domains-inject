@@ -13,10 +13,10 @@ Right now this has only been tested against TKGs installs using VDS networking.
 ## Usage
 
 1. ssh to vcenter and hop into shell
-2. **be sure to do a DCLI login otherwise the script will hang waiting for a password**
+2. **be sure to do a DCLI login otherwise the script will hang waiting for a password** run the command below and it should prompt you. When asked to store creds say yes.
 
 ```
-dcli +server <server>  +credstore-add +username administrator@vsphere.local +skip-server-verification +password <password> com vmware vcenter vm list
+dcli +server <server> +skip-server-verification com vmware vcenter cluster list
 ```
 
 3. copy this repo over to your vcenter , you can download the zip from github and scp or curl it down to vcenter if you have internet access.

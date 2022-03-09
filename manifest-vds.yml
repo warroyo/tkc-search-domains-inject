@@ -36,10 +36,11 @@ kind: ClusterRole
 metadata:
   name: domains-inject
 rules:
-  - apiGroups: ["","vmoperator.vmware.com"]
+  - apiGroups: ["","vmoperator.vmware.com","run.tanzu.vmware.com"]
     resources:
       - virtualmachines
       - secrets
+      - tanzukubernetesclusters
     verbs:
       - get
       - list

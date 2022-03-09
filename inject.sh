@@ -10,7 +10,6 @@ loginfo() { echo "$(date) INFO: $@" ;}
 run_interval=${INTERVAL:=30}
 loginfo "testing kubectl and chown cache "
 kubectl get tkc
-chown inject:inject ~/.kube/cache
 
 function inject_search_domains()
 {
@@ -78,7 +77,7 @@ function run()
        $(typeset -f inject_search_domains)
        mkdir -p /etc/systemd/network/10-gosc-eth0.network.d
        echo -e "[Network]\nDomains=${DOMAINS}"  > /etc/systemd/network/10-gosc-eth0.network.d/00-domains.conf.new
-       inject_ca
+       inject_search_domains
       fi
 
 

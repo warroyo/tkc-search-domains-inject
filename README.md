@@ -14,7 +14,12 @@ Right now this has only been tested against TKGs installs using VDS networking.
 
 1. ssh to vcenter and hop into shell
 2. **be sure to do a DCLI login otherwise the script will hang waiting for a password**
-3. copy this repo over to your vcenter 
+
+```
+dcli +server <server>  +credstore-add +username administrator@vsphere.local +skip-server-verification +password <password> com vmware vcenter vm list
+```
+
+3. copy this repo over to your vcenter , you can download the zip from github and scp or curl it down to vcenter if you have internet access.
 4. grab the `domains-inject.tar.gz` from the releases and upload it to your vcenter VM. you can do this scp or if you have internet connection out from vcenter just pull it down to the vm. copy it into the newly created repo directory
 5. open `env.sh` and fill in the variables
 6. execute `install.sh`

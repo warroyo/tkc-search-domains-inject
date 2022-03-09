@@ -12,7 +12,6 @@ nextip(){
 }
 
 
-export REG_CERT=$(echo "$REG_CERT" | base64 -w 0)
 
 #get the cluster id
 CLUSTER=$(dcli com vmware vcenter cluster list --names ${VSPHERE_CLUSTER} +formatter yaml | sed -n -e 's/^.*cluster: //p')

@@ -8,13 +8,14 @@ loginfo() { echo "$(date) INFO: $@" ;}
 
 
 run_interval=${INTERVAL:=30}
-
+loginfo "testing kubectl and chown cache "
+kubectl get tkc
+chown inject:inject ~/.kube/cache
 
 function inject_search_domains()
 {
 
   echo "checking if search domains exists"
-  mkdir -p /etc/systemd/network/10-gosc-eth0.network.d
   touch /etc/systemd/network/10-gosc-eth0.network.d/00-domains.conf
   if cmp -s "/etc/systemd/network/10-gosc-eth0.network.d/00-domains.conf.new" "/etc/systemd/network/10-gosc-eth0.network.d/00-domains.conf"; then
       echo "the search domains already exists and have not changed"
@@ -74,7 +75,8 @@ function run()
       then
         echo no Domains provided, skipping...
       else
-       $(typeset -f inject_ca)
+       $(typeset -f inject_search_domains)
+       mkdir -p /etc/systemd/network/10-gosc-eth0.network.d
        echo -e "[Network]\nDomains=${DOMAINS}"  > /etc/systemd/network/10-gosc-eth0.network.d/00-domains.conf.new
        inject_ca
       fi

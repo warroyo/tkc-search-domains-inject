@@ -7,7 +7,7 @@ RUN tdnf update -y && tdnf install -y jq openssh-clients shadow && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl && \
     chmod +x /inject.sh && \
-    groupadd inject && useradd -G inject inject
+    groupadd inject && useradd -G inject -m -d /home/inject/ inject
 
 ENTRYPOINT [ "/inject.sh" ]
 

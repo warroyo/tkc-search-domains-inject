@@ -39,7 +39,7 @@ dcli +server <server> +skip-server-verification com vmware vcenter cluster list
 all vars are set in `env.sh`
 
 * `VSPHERE_CLUSTER` -  the vsphere cluster name that wcp is enabled on
-* `DEPLOY_NS` - namespace that the proxy pod will be deployed into
+* `DEPLOY_NS` - the supervisor namespace that the inject pod will be deployed into
 * `DOMAINS` - the search domains you want to add separated by a space. 
 * `INTERVAL` - interval to run the script
 

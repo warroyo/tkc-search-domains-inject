@@ -19,8 +19,8 @@ Right now this has only been tested against TKGs installs using VDS networking.
 dcli +server <server> +skip-server-verification com vmware vcenter cluster list
 ```
 
-3. copy this repo over to your vcenter , you can download the zip from github and scp or curl it down to vcenter if you have internet access.
-4. grab the `domains-inject.tar.gz` from the releases and upload it to your vcenter VM. you can do this scp or if you have internet connection out from vcenter just pull it down to the vm. copy it into the newly created repo directory
+3. copy this repo over to your vcenter , you can download the zip from github and scp or curl it down to vcenter if you have internet access. you will then want to unzip the file on vcenter and `cd` into the directory that it created.
+4. next grab the `domains-inject.tar.gz` from the github releases and upload it to your vcenter VM. you can do this scp or if you have internet connection out from vcenter just pull it down to the vm. copy the `tar.gz` it into the newly created repo directory, no need unzip it.
 5. open `env.sh` and fill in the variables
 6. execute `install.sh`
 
